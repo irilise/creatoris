@@ -5,6 +5,7 @@ use bevy::prelude::*;
 /// A lightweight, flat data structure for ungudided mass driver packets.
 /// Does not need Transform or Mesh unless explicitly rendered.
 #[derive(Component)]
+#[allow(dead_code)]
 pub struct CargoPacket {
     pub origin_entity: Entity,
     pub destination_entity: Entity,
