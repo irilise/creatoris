@@ -22,4 +22,7 @@ Using open access geographical maps of the planets in the solar system, I want t
 
 ## The Planet - System Bridge
 
-A smooth transition from looking at what you are doing planetarily into how you are moving resource onto and off world is essential to how this turns out. I want you to be able to fully experience the goings on of each planet as linked with the solar system, and the movement of bodies across the solar system as important and impactful on each planet. 
+A smooth transition from looking at what you are doing planetarily into how you are moving resource onto and off world is essential to how this turns out. I want you to be able to fully experience the goings on of each planet as linked with the solar system, and the movement of bodies across the solar system as important and impactful on each planet.
+
+## Disclosure on AI Use
+This is a test of HEAVY vibe coding using local LLMS such as Qwen and Gemma, among others. I intend to write minimal code myself here. This is HEAVILY AI generated.

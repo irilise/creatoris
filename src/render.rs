@@ -7,6 +7,8 @@ use bevy::prelude::*;
 pub struct RenderSettings {
     pub show_orbits: bool,
     pub show_asteroid_orbits: bool,
+    pub enable_atmospheres: bool,
+    pub enable_rings: bool,
 }
 
 impl Default for RenderSettings {
@@ -14,6 +16,8 @@ impl Default for RenderSettings {
         Self {
             show_orbits: true,
             show_asteroid_orbits: false, // Keep asteroid belts clean by default
+            enable_atmospheres: true,
+            enable_rings: true,
         }
     }
 }
@@ -38,6 +42,14 @@ fn handle_render_input(
     }
     if keyboard.just_pressed(KeyCode::KeyI) {
         settings.show_asteroid_orbits = !settings.show_asteroid_orbits;
+    }
+    if keyboard.just_pressed(KeyCode::KeyA) {
+        settings.enable_atmospheres = !settings.enable_atmospheres;
+        info!("Atmospheres: {}", settings.enable_atmospheres);
+    }
+    if keyboard.just_pressed(KeyCode::KeyR) {
+        settings.enable_rings = !settings.enable_rings;
+        info!("Rings: {}", settings.enable_rings);
     }
 }
 

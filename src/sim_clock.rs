@@ -77,7 +77,7 @@ fn handle_clock_input(
     }
 }
 
-fn update_clock(time: Res<Time<Virtual>>, mut sim_clock: ResMut<SimClock>) {
+fn update_clock(time: Res<Time>, mut sim_clock: ResMut<SimClock>) {
     if !sim_clock.paused {
         let delta_f64 = time.delta_secs_f64();
         sim_clock.elapsed += delta_f64 * sim_clock.time_scale;

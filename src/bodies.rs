@@ -1,4 +1,16 @@
 use crate::coordinates::UniversalPosition;
+use crate::materials::asteroid::create_asteroid_material;
+use crate::materials::earth::create_earth_material;
+use crate::materials::jupiter::create_jupiter_material;
+use crate::materials::mars::create_mars_material;
+use crate::materials::mercury::create_mercury_material;
+use crate::materials::moon::create_moon_material;
+use crate::materials::neptune::create_neptune_material;
+use crate::materials::pluto::create_pluto_material;
+use crate::materials::saturn::{create_saturn_material, create_saturn_rings_material};
+use crate::materials::sun::create_sun_material;
+use crate::materials::uranus::create_uranus_material;
+use crate::materials::venus::create_venus_material;
 use crate::orbital_math::OrbitalElements;
 use crate::sim_clock::SimClock;
 use bevy::math::DVec3;
@@ -100,13 +112,15 @@ impl Plugin for BodiesPlugin {
 fn spawn_solar_system(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
+    mut standard_materials: ResMut<Assets<StandardMaterial>>,
     mut directory: ResMut<SolarSystemDirectory>,
 ) {
     let mut targets = Vec::new();
 
     // 0. Sun
-    let sun_color = Color::srgb(1.0, 0.92, 0.3);
+    // Rendered via the ported Celestia star material (unlit + emissive
+    // StandardMaterial), which stays reliably visible over a near-black clear color.
+    let sun_mat = create_sun_material(&mut standard_materials, None);
     let sun_entity = commands
         .spawn((
             CelestialBody {
@@ -115,17 +129,12 @@ fn spawn_solar_system(
                 mass: 1.9885e30,
                 radius: 696_340.0,
                 display_radius: 120.0,
-                color: sun_color,
+                color: Color::srgb(1.0, 0.92, 0.3),
                 description: "G-type main-sequence star, containing 99.86% of the Solar System's total mass.".into(),
             },
             UniversalPosition(DVec3::ZERO),
             Mesh3d(meshes.add(Sphere::new(120.0))),
-            MeshMaterial3d(materials.add(StandardMaterial {
-                base_color: sun_color,
-                emissive: LinearRgba::rgb(4.0, 3.6, 0.8),
-                unlit: true,
-                ..default()
-            })),
+            MeshMaterial3d(sun_mat),
             Transform::default(),
         ))
         .with_children(|parent| {
@@ -145,6 +154,7 @@ fn spawn_solar_system(
 
     // 1. Mercury
     let mercury_color = Color::srgb(0.72, 0.70, 0.68);
+    let mercury_mat = create_mercury_material(&mut standard_materials, None);
     let mercury_entity = commands
         .spawn((
             CelestialBody {
@@ -162,11 +172,7 @@ fn spawn_solar_system(
             OrbitPathColor(Color::srgb(0.65, 0.65, 0.65)),
             UniversalPosition(DVec3::ZERO),
             Mesh3d(meshes.add(Sphere::new(14.0))),
-            MeshMaterial3d(materials.add(StandardMaterial {
-                base_color: mercury_color,
-                perceptual_roughness: 0.9,
-                ..default()
-            })),
+            MeshMaterial3d(mercury_mat),
             Transform::default(),
         ))
         .id();
@@ -174,6 +180,7 @@ fn spawn_solar_system(
 
     // 2. Venus
     let venus_color = Color::srgb(0.92, 0.80, 0.52);
+    let venus_mat = create_venus_material(&mut standard_materials, None);
     let venus_entity = commands
         .spawn((
             CelestialBody {
@@ -191,11 +198,7 @@ fn spawn_solar_system(
             OrbitPathColor(Color::srgb(0.85, 0.75, 0.4)),
             UniversalPosition(DVec3::ZERO),
             Mesh3d(meshes.add(Sphere::new(22.0))),
-            MeshMaterial3d(materials.add(StandardMaterial {
-                base_color: venus_color,
-                perceptual_roughness: 0.7,
-                ..default()
-            })),
+            MeshMaterial3d(venus_mat),
             Transform::default(),
         ))
         .id();
@@ -203,6 +206,7 @@ fn spawn_solar_system(
 
     // 3. Earth
     let earth_color = Color::srgb(0.18, 0.46, 0.88);
+    let earth_mat = create_earth_material(&mut standard_materials, None);
     let earth_entity = commands
         .spawn((
             CelestialBody {
@@ -220,12 +224,7 @@ fn spawn_solar_system(
             OrbitPathColor(Color::srgb(0.2, 0.55, 0.95)),
             UniversalPosition(DVec3::ZERO),
             Mesh3d(meshes.add(Sphere::new(24.0))),
-            MeshMaterial3d(materials.add(StandardMaterial {
-                base_color: earth_color,
-                perceptual_roughness: 0.6,
-                metallic: 0.1,
-                ..default()
-            })),
+            MeshMaterial3d(earth_mat),
             Transform::default(),
         ))
         .id();
@@ -233,6 +232,7 @@ fn spawn_solar_system(
 
     // 4. Moon (Earth's Moon)
     let moon_color = Color::srgb(0.80, 0.80, 0.82);
+    let moon_mat = create_moon_material(&mut standard_materials, None);
     let moon_entity = commands
         .spawn((
             CelestialBody {
@@ -251,11 +251,7 @@ fn spawn_solar_system(
             OrbitPathColor(Color::srgba(0.7, 0.7, 0.8, 0.8)),
             UniversalPosition(DVec3::ZERO),
             Mesh3d(meshes.add(Sphere::new(8.0))),
-            MeshMaterial3d(materials.add(StandardMaterial {
-                base_color: moon_color,
-                perceptual_roughness: 0.95,
-                ..default()
-            })),
+            MeshMaterial3d(moon_mat),
             Transform::default(),
         ))
         .id();
@@ -263,6 +259,7 @@ fn spawn_solar_system(
 
     // 5. Mars
     let mars_color = Color::srgb(0.86, 0.38, 0.22);
+    let mars_mat = create_mars_material(&mut standard_materials, None);
     let mars_entity = commands
         .spawn((
             CelestialBody {
@@ -280,11 +277,7 @@ fn spawn_solar_system(
             OrbitPathColor(Color::srgb(0.85, 0.4, 0.25)),
             UniversalPosition(DVec3::ZERO),
             Mesh3d(meshes.add(Sphere::new(16.0))),
-            MeshMaterial3d(materials.add(StandardMaterial {
-                base_color: mars_color,
-                perceptual_roughness: 0.85,
-                ..default()
-            })),
+            MeshMaterial3d(mars_mat),
             Transform::default(),
         ))
         .id();
@@ -292,11 +285,7 @@ fn spawn_solar_system(
 
     // Asteroid Belt: Spawn representative asteroid belt bodies between 2.2 and 3.2 AU
     let asteroid_mesh = meshes.add(Sphere::new(3.0));
-    let asteroid_material = materials.add(StandardMaterial {
-        base_color: Color::srgb(0.48, 0.44, 0.40),
-        perceptual_roughness: 0.95,
-        ..default()
-    });
+    let asteroid_material = create_asteroid_material(&mut standard_materials, None);
 
     let asteroid_count = 140;
     for i in 0..asteroid_count {
@@ -335,6 +324,7 @@ fn spawn_solar_system(
 
     // 6. Jupiter
     let jupiter_color = Color::srgb(0.85, 0.68, 0.48);
+    let jupiter_mat = create_jupiter_material(&mut standard_materials, None);
     let jupiter_entity = commands
         .spawn((
             CelestialBody {
@@ -352,11 +342,7 @@ fn spawn_solar_system(
             OrbitPathColor(Color::srgb(0.85, 0.65, 0.45)),
             UniversalPosition(DVec3::ZERO),
             Mesh3d(meshes.add(Sphere::new(64.0))),
-            MeshMaterial3d(materials.add(StandardMaterial {
-                base_color: jupiter_color,
-                perceptual_roughness: 0.65,
-                ..default()
-            })),
+            MeshMaterial3d(jupiter_mat),
             Transform::default(),
         ))
         .id();
@@ -364,6 +350,9 @@ fn spawn_solar_system(
 
     // 7. Saturn
     let saturn_color = Color::srgb(0.90, 0.82, 0.58);
+    let saturn_mat = create_saturn_material(&mut standard_materials, None);
+    // Ported Celestia ring renderer: a translucent banded disc.
+    let saturn_rings_mat = create_saturn_rings_material(&mut standard_materials, None);
     let saturn_entity = commands
         .spawn((
             CelestialBody {
@@ -381,11 +370,7 @@ fn spawn_solar_system(
             OrbitPathColor(Color::srgb(0.88, 0.80, 0.55)),
             UniversalPosition(DVec3::ZERO),
             Mesh3d(meshes.add(Sphere::new(52.0))),
-            MeshMaterial3d(materials.add(StandardMaterial {
-                base_color: saturn_color,
-                perceptual_roughness: 0.7,
-                ..default()
-            })),
+            MeshMaterial3d(saturn_mat),
             Transform::default(),
         ))
         .id();
@@ -396,25 +381,19 @@ fn spawn_solar_system(
         minor_radius: 4.0,
         major_radius: 95.0,
     });
-    let ring_mat = materials.add(StandardMaterial {
-        base_color: Color::srgba(0.88, 0.80, 0.60, 0.85),
-        alpha_mode: AlphaMode::Blend,
-        perceptual_roughness: 0.8,
-        cull_mode: None,
-        ..default()
-    });
 
     commands.spawn((
         SaturnRingVisual,
         OrbitParent(saturn_entity),
         UniversalPosition(DVec3::ZERO),
         Mesh3d(ring_mesh),
-        MeshMaterial3d(ring_mat),
+        MeshMaterial3d(saturn_rings_mat),
         Transform::from_rotation(Quat::from_rotation_x(0.46)), // 26.7 deg axial tilt
     ));
 
     // 8. Uranus
     let uranus_color = Color::srgb(0.48, 0.82, 0.86);
+    let uranus_mat = create_uranus_material(&mut standard_materials, None);
     let uranus_entity = commands
         .spawn((
             CelestialBody {
@@ -432,11 +411,7 @@ fn spawn_solar_system(
             OrbitPathColor(Color::srgb(0.45, 0.8, 0.85)),
             UniversalPosition(DVec3::ZERO),
             Mesh3d(meshes.add(Sphere::new(36.0))),
-            MeshMaterial3d(materials.add(StandardMaterial {
-                base_color: uranus_color,
-                perceptual_roughness: 0.6,
-                ..default()
-            })),
+            MeshMaterial3d(uranus_mat),
             Transform::default(),
         ))
         .id();
@@ -444,6 +419,7 @@ fn spawn_solar_system(
 
     // 9. Neptune
     let neptune_color = Color::srgb(0.20, 0.42, 0.92);
+    let neptune_mat = create_neptune_material(&mut standard_materials, None);
     let neptune_entity = commands
         .spawn((
             CelestialBody {
@@ -461,11 +437,7 @@ fn spawn_solar_system(
             OrbitPathColor(Color::srgb(0.25, 0.45, 0.92)),
             UniversalPosition(DVec3::ZERO),
             Mesh3d(meshes.add(Sphere::new(35.0))),
-            MeshMaterial3d(materials.add(StandardMaterial {
-                base_color: neptune_color,
-                perceptual_roughness: 0.55,
-                ..default()
-            })),
+            MeshMaterial3d(neptune_mat),
             Transform::default(),
         ))
         .id();
@@ -473,6 +445,7 @@ fn spawn_solar_system(
 
     // 10. Pluto (Dwarf Planet)
     let pluto_color = Color::srgb(0.76, 0.66, 0.58);
+    let pluto_mat = create_pluto_material(&mut standard_materials, None);
     let pluto_entity = commands
         .spawn((
             CelestialBody {
@@ -490,18 +463,14 @@ fn spawn_solar_system(
             OrbitPathColor(Color::srgb(0.65, 0.55, 0.5)),
             UniversalPosition(DVec3::ZERO),
             Mesh3d(meshes.add(Sphere::new(10.0))),
-            MeshMaterial3d(materials.add(StandardMaterial {
-                base_color: pluto_color,
-                perceptual_roughness: 0.9,
-                ..default()
-            })),
+            MeshMaterial3d(pluto_mat),
             Transform::default(),
         ))
         .id();
     targets.push((pluto_entity, "Pluto".to_string()));
 
     directory.targets = targets;
-    directory.current_target_index = 3; // Start focused on Earth
+    directory.current_target_index = 0; // Start focused on the Sun
 }
 
 fn propagate_orbits(

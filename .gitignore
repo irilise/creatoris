@@ -1,1 +1,42 @@
-/target
+# Rust build artifacts
+target/
+debug/
+release/
+
+# Celestia directory (contains large assets and documentation)
+Celestia/
+
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Generated files
+*.o
+*.obj
+*.pyc
+__pycache__/
+*.orig
+
+# Documentation
+doc/
+*.mdx
+
+# Environment files
+.env
+.venv/
+venv/
+environment.yml
+
+# Logs and temporary files
+*.log
+tmp/
+temp/
+.tmp/
+
+# System-specific
+AppleScripts/
+*.app/
